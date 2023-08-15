@@ -36,14 +36,6 @@
       });
   }
 
-  function politicalMapMode() {
-    fetchData(SHEET_RANGE_POLITICAL);
-  }
-
-  function terrainMapMode() {
-    fetchData(SHEET_RANGE_TERRAIN);
-  }
-
   // Function to handle the path selection
   function selectPath(pathId) {
     // Get all path elements
@@ -59,15 +51,15 @@
     selectedPath.classList.add('selected');
 
     // Perform the lookup and update the selected path info
-    lookupPathId(pathId, function(lookupResult) {
+    lookupPathId(pathId, SHEET_RANGE_SELECTIONLOOKUP, function(lookupResult) {
       const selectedPathIdElement = document.getElementById('selectedProvinceOwner');
       selectedPathIdElement.textContent = lookupResult;
     });
   }
 
   // Function to perform lookup using pathId
-  function lookupPathId(pathId, callback) {
-    fetch(FULL_URL + SHEET_RANGE_SELECTIONLOOKUP)
+  function lookupPathId(pathId, lookupRange, callback) {
+    fetch(FULL_URL + lookupRange)
       .then((res) => res.text())
       .then((data) => {
         const jsonData = data.match(/google\.visualization\.Query\.setResponse\((.*?)\);/);
@@ -102,11 +94,10 @@
   var dropdown = document.getElementById('mapmode');
   dropdown.addEventListener('change', function () {
     var selectedValue = dropdown.value;
-
     if (selectedValue === 'Political') {
-      politicalMapMode();
+      fetchData(SHEET_RANGE_POLITICAL);
     } else if (selectedValue === 'Terrain') {
-      terrainMapMode();
+      fetchData(SHEET_RANGE_TERRAIN);
     } else if (selectedValue === 'Debug') {
       console.log('Debug selected');
     }
